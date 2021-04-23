@@ -88,10 +88,12 @@ class ventana extends JFrame implements ActionListener{
 		add(btnAgregar);
 		
 		btnBorrar = new JButton("Borrar");
+		btnBorrar.addActionListener(this);
 		btnBorrar.setBounds(320, 70, 100, 30);
 		add(btnBorrar);
 		
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(this);
 		btnCancelar.setBounds(320, 110, 100, 30);
 		add(btnCancelar);
 		
@@ -117,6 +119,15 @@ class ventana extends JFrame implements ActionListener{
 			a.setCarrera(carrera);
 			
 			System.out.println(aDAD.insertarRegistro(a) ? "EXITO": "Me cambio de carrera");
+		}
+		else if(e.getSource() == btnBorrar) {
+			cajaNoControl.setText("");
+			cajaNombre.setText("");
+			cajaAP.setText("");
+			cajaAM.setText("");
+		}
+		else if(e.getSource() == btnCancelar) {
+			setVisible(false);
 		}
 		
 	}
