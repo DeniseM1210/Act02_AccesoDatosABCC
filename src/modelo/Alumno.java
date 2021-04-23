@@ -6,7 +6,7 @@ public class Alumno {
 	String primerAp;
 	String segundoAp;
 	byte edad; //lo mejor es una fecha de nacimiento
-	byte semestre;
+	int semestre;
 	String carrera;
 	
 	public Alumno() {}
@@ -51,11 +51,11 @@ public class Alumno {
 	public void setEdad(byte edad) {
 		this.edad = edad;
 	}
-	public byte getSemestre() {
+	public int getSemestre() {
 		return semestre;
 	}
-	public void setSemestre(byte semestre) {
-		this.semestre = semestre;
+	public void setSemestre(int i) {
+		this.semestre = i;
 	}
 	public String getCarrera() {
 		return carrera;

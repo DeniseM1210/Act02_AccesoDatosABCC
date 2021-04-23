@@ -83,6 +83,7 @@ class ventana extends JFrame implements ActionListener{
 		add(comboCarrera);
 		
 		btnAgregar = new JButton("Agregar");
+		btnAgregar.addActionListener(this);
 		btnAgregar.setBounds(320, 30, 100, 30);
 		add(btnAgregar);
 		
@@ -105,7 +106,17 @@ class ventana extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnAgregar) {
+			String carrera = (String) comboCarrera.getSelectedItem();
+			Alumno a = new Alumno();
+			AlumnoDAD aDAD = new AlumnoDAD();
+			a.setNumControl(cajaNoControl.getText());
+			a.setNombre(cajaNombre.getText());
+			a.setPrimerAp(cajaAP.getText());
+			a.setSegundoAp(cajaAM.getText());
+			a.setSemestre(comboSemestre.getSelectedIndex());
+			a.setCarrera(carrera);
 			
+			System.out.println(aDAD.insertarRegistro(a) ? "EXITO": "Me cambio de carrera");
 		}
 		
 	}
