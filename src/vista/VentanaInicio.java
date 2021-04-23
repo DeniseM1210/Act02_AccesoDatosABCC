@@ -40,46 +40,46 @@ class ventana extends JFrame implements ActionListener{
 		add(txtNoControl);
 		
 		JLabel txtNombres = new JLabel("Nombres: ");
-		txtNombres.setBounds(50,42, 150, 20);
+		txtNombres.setBounds(50,47, 150, 20);
 		add(txtNombres);
 		
 		JLabel txtAP = new JLabel("Apellido Paterno: ");
-		txtAP.setBounds(50, 62, 150, 20);
+		txtAP.setBounds(50, 72, 150, 20);
 		add(txtAP);
 		
 		JLabel txtAM = new JLabel("Apellido Materno: ");
-		txtAM.setBounds(50, 82, 150, 20);
+		txtAM.setBounds(50, 97, 150, 20);
 		add(txtAM);
 		
 		JLabel txtSemestre = new JLabel("Semestre: ");
-		txtSemestre.setBounds(50, 102, 150, 20);
+		txtSemestre.setBounds(50, 122, 150, 20);
 		add(txtSemestre);
 		
 		JLabel txtCarrera = new JLabel("Carrera: ");
-		txtCarrera.setBounds(50, 122, 150, 20);
+		txtCarrera.setBounds(50, 147, 150, 20);
 		add(txtCarrera);
 		
 		cajaNoControl = new JTextField(5);
 		cajaNoControl.setBounds(165, 22, 150, 20);
 		add(cajaNoControl);
 		cajaNombre = new JTextField(5);
-		cajaNombre.setBounds(110, 42, 205, 20);
+		cajaNombre.setBounds(110, 47, 205, 20);
 		add(cajaNombre);
 		cajaAP = new JTextField(5);
-		cajaAP.setBounds(155, 62, 160, 20);
+		cajaAP.setBounds(155, 72, 160, 20);
 		add(cajaAP);
 		cajaAM = new JTextField(5);
-		cajaAM.setBounds(155, 82, 160, 20);
+		cajaAM.setBounds(155, 97, 160, 20);
 		add(cajaAM);
 		
 		String semestre[] = {"Elige Semestre...", "Primer", "Segundo", "Tercero", "Cuarto", "Quinto", "Sexto", "Septimo", "Octavo", "Noveno"};
 		comboSemestre = new JComboBox<String>(semestre);
-		comboSemestre.setBounds(155, 102, 160, 20);
+		comboSemestre.setBounds(155, 122, 160, 20);
 		add(comboSemestre);
 		
 		String carreras[] = {"Eige carrera..." , "ISC", "IM", "IA", "LA", "LC"};
 		comboCarrera = new JComboBox<String>(carreras);
-		comboCarrera.setBounds(155, 122, 160, 20);
+		comboCarrera.setBounds(155, 147, 160, 20);
 		add(comboCarrera);
 		
 		btnAgregar = new JButton("Agregar");
@@ -98,7 +98,7 @@ class ventana extends JFrame implements ActionListener{
 		add(btnCancelar);
 		
 		JTable tablaAlumnos = new JTable(6,6);
-		tablaAlumnos.setBounds(10, 150, 500, 100);
+		tablaAlumnos.setBounds(10, 180, 500, 100);
 		add(tablaAlumnos);
 		
 		setVisible(true);
