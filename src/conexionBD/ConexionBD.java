@@ -16,7 +16,7 @@ public class ConexionBD {
 			
 			String URL = "jdbc:mysql://localhost:3306/Esccuela_Topicos";
 			
-			conexion = DriverManager.getConnection(URL, "itsj", "");
+			conexion = DriverManager.getConnection(URL, "root", "nanami777");
 		
 			System.out.println("Conexion establecida");
 		} catch (ClassNotFoundException e) {
@@ -65,8 +65,8 @@ public class ConexionBD {
 	
 	
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		new ConexionBD();
-	}
+	}*/
 
 }

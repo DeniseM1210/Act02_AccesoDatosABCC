@@ -4,23 +4,31 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import controlador.AlumnoDAD;
+import controlador.AlumnoDAO;
 import modelo.Alumno;
 
 class ventana extends JFrame implements ActionListener{
 	JTextField cajaNoControl, cajaNombre, cajaAP, cajaAM;
 	JButton btnAgregar, btnBorrar, btnCancelar;
 	JComboBox comboSemestre, comboCarrera;
+	JMenuBar menu;
+	JMenu menuBDAlumnos;
+	
+	JInternalFrame IF_AltaAlumnos;
 	
 	public ventana() {
 		getContentPane().setLayout(new FlowLayout());
@@ -98,8 +106,26 @@ class ventana extends JFrame implements ActionListener{
 		add(btnCancelar);
 		
 		JTable tablaAlumnos = new JTable(6,6);
+		JScrollPane scrollPane = new JScrollPane(tablaAlumnos);
 		tablaAlumnos.setBounds(10, 180, 500, 100);
 		add(tablaAlumnos);
+		
+		String controlador = "com.mysql.cj.jdbc.Driver";
+		String URL = "jdbc:mysql://localhost:3306/Esccuela_Topicos";
+		String consulta = "select * from alumnos";
+		
+		ResultSetTableModel modeloDatos = null;
+		try {
+			modeloDatos = new ResultSetTableModel(controlador, URL, consulta);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		tablaAlumnos.setModel(modeloDatos);
 		
 		setVisible(true);
 	}
@@ -110,7 +136,7 @@ class ventana extends JFrame implements ActionListener{
 		if (e.getSource() == btnAgregar) {
 			String carrera = (String) comboCarrera.getSelectedItem();
 			Alumno a = new Alumno();
-			AlumnoDAD aDAD = new AlumnoDAD();
+			AlumnoDAO aDAD = new AlumnoDAO();
 			a.setNumControl(cajaNoControl.getText());
 			a.setNombre(cajaNombre.getText());
 			a.setPrimerAp(cajaAP.getText());
@@ -138,12 +164,20 @@ public class VentanaInicio {
 	public static void main(String[] args) {
 		//Suponiendo que los datos vienen desde la interfaz grafica
 		
-		/*Alumno a = new Alumno("01", "Han", "Jisung", "-", (byte)20, (byte)4, "ISC");
+		//Alumno a = new Alumno("01", "Felix", "Lee", "-", (byte)20, (byte)10, "ISC");
 		
-		AlumnoDAD aDAD = new AlumnoDAD();
+		//AlumnoDAD aDAD = new AlumnoDAD();
 		
-		System.out.println(aDAD.insertarRegistro(a) ? "EXITO": "Me cambio de carrera");
-		*/
+		//System.out.println(aDAD.insertarRegistro(a) ? "EXITO": "Me cambio de carrera");
+		
+		
+		//System.out.println(aDAD.eliminarRegistro("01") ? "EXITO": "No funciono");
+		
+		//Alumno a2 = new Alumno("01", "Felix", "Lee", "-", (byte)20, (byte)6, "ISC");
+		//System.out.println(aDAD.modificarRegistro(a2) ? "EXITO" : "No funciono");
+		
+		
+		//System.out.println(aDAD.buscarAlumnos(null) ? "EXITO BUSCAR" : "No funciono :C");
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -152,5 +186,5 @@ public class VentanaInicio {
 			}
 		});
 	}
-
 }
+
