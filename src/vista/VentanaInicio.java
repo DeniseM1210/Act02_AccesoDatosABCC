@@ -200,9 +200,9 @@ class ventana extends JFrame implements ActionListener, ItemListener{
 		comboCarrera = new JComboBox<String>();
 		
 		cajaNoControl.addKeyListener(new KeyAdapter() { //Codigo de validación
-			public void keyPressed(KeyEvent ke) {
-				int code=ke.getKeyCode();
-				if (((cajaNoControl.getText().length()<9)&&(ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9'))||(cajaNoControl.getText().equals("")&&((ke.getKeyChar() >= 'a' && ke.getKeyChar() <= 'z')||(ke.getKeyChar() >= 'A' && ke.getKeyChar() <= 'Z')))||(code==KeyEvent.VK_BACK_SPACE)) {
+			public void keyPressed(KeyEvent evento) {
+				int code = evento.getKeyCode();
+				if (((cajaNoControl.getText().length() < 9) && (evento.getKeyChar() >= '0' && evento.getKeyChar() <= '9'))||(cajaNoControl.getText().equals("")&&((evento.getKeyChar() >= 'a' && evento.getKeyChar() <= 'z')||(evento.getKeyChar() >= 'A' && evento.getKeyChar() <= 'Z')))||(code==KeyEvent.VK_BACK_SPACE)) {
 					cajaNoControl.setEditable(true);
 				}else{
 					cajaNoControl.setEditable(false);
@@ -358,6 +358,7 @@ class ventana extends JFrame implements ActionListener, ItemListener{
 		metodoMagico(comboCarrera, 216, 181, 144, 16, panel);
 		metodoMagico(btnBorrar, 380, 46, 90, 18, panel);
 		metodoMagico(btnCancelar, 375, 153, 100, 18, panel);
+		if (busq) {metodoMagico(btnBuscar, 380, 11, 84, 30, panel);}
 		if (interact) {
 			btnInteraccion.setText(boton);
 			if (boton.contains("GUARDAR CAMBIOS")) {
@@ -620,9 +621,9 @@ public class VentanaInicio {
 		
 		//Alumno a = new Alumno("01", "Felix", "Lee", "-", (byte)20, (byte)10, "ISC");
 		
-		//AlumnoDAD aDAD = new AlumnoDAD();
+		//AlumnoDAO aDAO = new AlumnoDAO();
 		
-		//System.out.println(aDAD.insertarRegistro(a) ? "EXITO": "Me cambio de carrera");
+		//System.out.println(aDAO.insertarRegistro(a) ? "EXITO": "Me cambio de carrera");
 		
 		
 		//System.out.println(aDAD.eliminarRegistro("01") ? "EXITO": "No funciono");
