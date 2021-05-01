@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -35,7 +36,7 @@ import javax.swing.SwingUtilities;
 import controlador.AlumnoDAO;
 import modelo.Alumno;
 
-class ventana extends JFrame implements ActionListener{
+class ventana extends JFrame implements ActionListener, ItemListener{
 	JTextField cajaNoControl, cajaNombre, cajaAP, cajaAM;
 	JButton btnInteraccion, btnBorrar, btnCancelar, btnBuscar;
 	JComboBox comboEdad, comboSemestre, comboCarrera;
@@ -54,7 +55,7 @@ class ventana extends JFrame implements ActionListener{
 	public ventana() {
 		getContentPane().setLayout(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(570, 350);
+		setSize(584, 490);
 		setTitle("Menú BD Alumnos");
 		setLocationRelativeTo(null);
 		
@@ -74,11 +75,11 @@ class ventana extends JFrame implements ActionListener{
 		JPanel panelConsultas[]= defPanel(IF_ConsultasAlumnos, "Consultas Alumnos", "CONSULTAS ALUMNOS", Color.BLUE);
 		
 		tablaAl = new JInternalFrame();
-		tablaAl.getContentPane().setLayout(null);
-		tablaAl.setDefaultCloseOperation(HIDE_ON_CLOSE);
-		tablaAl.setSize(567,137);
-		tablaAl.setLocation(0, 290);
-		tablaAl.setTitle("Tabla");
+			tablaAl.getContentPane().setLayout(null);
+			tablaAl.setDefaultCloseOperation(HIDE_ON_CLOSE);
+			tablaAl.setSize(567,137);
+			tablaAl.setLocation(0, 290);
+			tablaAl.setTitle("Tabla");
 		
 		menu = new JMenuBar();
 		altasAl = new JMenu("Altas");
@@ -93,9 +94,9 @@ class ventana extends JFrame implements ActionListener{
 					IF_BajaAlumnos.setVisible(false);
 					IF_CambiosAlumnos.setVisible(false);
 					IF_ConsultasAlumnos.setVisible(false);
-					setFormularioEnabled(false);
-					cajaNoControl.setEditable(true);
-					defPosicionamiento(panelAltas[1], false, true, "AGREGAR");
+					//cajaNoControl.setEditable(true);
+					setFormularioEnabled(true);
+					defPosicionamiento(panelAltas[1], false, true, "Agregar");
 					
 				}
 			});
@@ -167,6 +168,7 @@ class ventana extends JFrame implements ActionListener{
 		menu.add(bajasAl);
 		menu.add(cambiosAl);
 		menu.add(consultasAl);
+		setJMenuBar(menu);
 		
 		IF_AltaAlumnos.add(panelAltas[0]);
 		IF_AltaAlumnos.add(panelAltas[1]);
@@ -198,9 +200,9 @@ class ventana extends JFrame implements ActionListener{
 		comboCarrera = new JComboBox<String>();
 		
 		cajaNoControl.addKeyListener(new KeyAdapter() { //Codigo de validación
-			public void keyPressed(KeyEvent evento) {
-				int code = evento.getKeyCode();
-				if (((cajaNoControl.getText().length()<9)&&(evento.getKeyChar() >= '0' && evento.getKeyChar() <= '9'))||(cajaNoControl.getText().equals("")&&((evento.getKeyChar() >= 'a' && evento.getKeyChar() <= 'z')||(evento.getKeyChar() >= 'A' && evento.getKeyChar() <= 'Z')))||(code==KeyEvent.VK_BACK_SPACE)) {
+			public void keyPressed(KeyEvent ke) {
+				int code=ke.getKeyCode();
+				if (((cajaNoControl.getText().length()<9)&&(ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9'))||(cajaNoControl.getText().equals("")&&((ke.getKeyChar() >= 'a' && ke.getKeyChar() <= 'z')||(ke.getKeyChar() >= 'A' && ke.getKeyChar() <= 'Z')))||(code==KeyEvent.VK_BACK_SPACE)) {
 					cajaNoControl.setEditable(true);
 				}else{
 					cajaNoControl.setEditable(false);
@@ -276,14 +278,14 @@ class ventana extends JFrame implements ActionListener{
 		cbEdad = new JCheckBox();
 		cbSemestre = new JCheckBox();
 		cbCarrera = new JCheckBox();
-		cbTodos.addItemListener((ItemListener) this);
-		cbNoControl.addItemListener((ItemListener) this);
-		cbNombres.addItemListener((ItemListener) this);
-		cbApellidoP.addItemListener((ItemListener) this);
-		cbApellidoM.addItemListener((ItemListener) this);
-		cbEdad.addItemListener((ItemListener) this);
-		cbSemestre.addItemListener((ItemListener) this);
-		cbCarrera.addItemListener((ItemListener) this);
+		cbTodos.addItemListener(this);
+		cbNoControl.addItemListener(this);
+		cbNombres.addItemListener(this);
+		cbApellidoP.addItemListener(this);
+		cbApellidoM.addItemListener(this);
+		cbEdad.addItemListener(this);
+		cbSemestre.addItemListener(this);
+		cbCarrera.addItemListener(this);
 		
 	}
 	
@@ -326,7 +328,7 @@ class ventana extends JFrame implements ActionListener{
 		panelTitulo.setBackground(color);
 		panelTitulo.setBounds(0, 0, 567, 50);
 		JLabel lblTitulo = new JLabel(titulo);
-		lblTitulo.setFont(new Font("Calibri", Font.BOLD, 20));
+		lblTitulo.setFont(new Font("Calibri", Font.BOLD, 18));
 		lblTitulo.setForeground(Color.WHITE);
 		metodoMagico(lblTitulo, 30, 20, 290, 20, panelTitulo);
 		JPanel panel = new JPanel();
@@ -337,7 +339,7 @@ class ventana extends JFrame implements ActionListener{
 		retorno[0]=panelTitulo;
 		retorno[1]=panel;
 		return retorno;
-	};
+	}
 	
 	public void defPosicionamiento(JPanel panel, boolean busq, boolean interact, String boton) {
 		metodoMagico(txtNumeroDeControl, 90, 37, 130, 20, panel);
@@ -428,7 +430,7 @@ class ventana extends JFrame implements ActionListener{
 	}
 	
 	public void actualizarTabla(String driver, String url, String sql) {
-		ResultSetTableModel modeloDatos =null;
+		ResultSetTableModel modeloDatos = null;
 		try {
 			modeloDatos = new ResultSetTableModel(driver,url,sql);
 		} catch (ClassNotFoundException e1) {
@@ -469,7 +471,7 @@ class ventana extends JFrame implements ActionListener{
 			AlumnoDAO aDAO = new AlumnoDAO();
 			if (IF_AltaAlumnos.isVisible()) {
 				if (cajaNoControl.getText().equals("")||cajaNombre.getText().equals("")||cajaAP.getText().equals("")||cajaAM.getText().equals("")||comboEdad.getSelectedIndex()==-1||comboSemestre.getSelectedIndex()==-1||comboCarrera.getSelectedIndex()==-1) {
-					JOptionPane.showMessageDialog(null, "Error: faltan uno o más campos");
+					JOptionPane.showMessageDialog(null, "Error: faltan uno o más campos por rellenar");
 				}else {
 					Alumno a = new Alumno(cajaNoControl.getText(), cajaNombre.getText(), cajaAP.getText(), cajaAM.getText(),
 							(byte)(comboEdad.getSelectedIndex()+1), (byte)(comboSemestre.getSelectedIndex()+1), comboCarrera.getSelectedItem().toString());
@@ -492,7 +494,7 @@ class ventana extends JFrame implements ActionListener{
 			}else if (IF_CambiosAlumnos.isVisible()) {
 				
 				if (cajaNoControl.getText().equals("")) {
-					JOptionPane.showMessageDialog(null, "No se esta especificando el numero de control");
+					JOptionPane.showMessageDialog(null, "No especificó el numero de control");
 				}else {
 					Alumno a = new Alumno(cajaNoControl.getText(), cajaNombre.getText(), cajaAP.getText(), cajaAM.getText(),
 							(byte)(comboEdad.getSelectedIndex()+1), (byte)(comboSemestre.getSelectedIndex()+1), 
@@ -548,6 +550,65 @@ class ventana extends JFrame implements ActionListener{
 		
 		
 		
+		
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		Object src = e.getSource();
+		if (src==cbTodos) {
+			if(cbTodos.isSelected()) {
+				setCheckboxSelected(false);
+				setCheckboxesEnabled(false);
+				setFormularioEnabled(true);
+            }else {
+            	metodoRestablecerTodo(cajaNoControl, cajaNombre, cajaAP, cajaAM, comboEdad,comboSemestre,comboCarrera);
+            	setFormularioEnabled(false);
+            	setCheckboxesEnabled(true);
+            }
+		}else if(src==cbNoControl) {
+			if(cbNoControl.isSelected()) {cajaNoControl.setEditable(true);
+            }else {
+            	cajaNoControl.setText("");
+            	cajaNoControl.setEditable(false);
+            }
+		}else if (src==cbNombres) {
+			if(cbNombres.isSelected()) {cajaNombre.setEditable(true);
+            }else {
+            	cajaNombre.setText("");
+            	cajaNombre.setEditable(false);
+            }
+		}else if (src==cbApellidoP) {
+			if(cbApellidoP.isSelected()) {cajaAP.setEditable(true);
+            }else {
+            	cajaAP.setText("");
+            	cajaAP.setEditable(false);
+            }
+		}else if (src==cbApellidoM) {
+			if(cbApellidoM.isSelected()) {cajaAM.setEditable(true);
+            }else {
+            	cajaAM.setText("");
+            	cajaAM.setEditable(false);
+            }
+		}else if (src==cbEdad) {
+			if(cbEdad.isSelected()) {comboEdad.setEnabled(true);
+            }else {
+            	comboEdad.setSelectedIndex(-1);
+            	comboEdad.setEnabled(false);
+            }
+		}else if (src==cbSemestre) {
+			if(cbSemestre.isSelected()) {comboSemestre.setEnabled(true);
+            }else {
+            	comboSemestre.setSelectedIndex(-1);
+            	comboSemestre.setEnabled(false);
+            }
+		}else if (src==cbCarrera) {
+			if(cbCarrera.isSelected()) {comboCarrera.setEnabled(true);
+            }else {
+            	comboCarrera.setSelectedIndex(-1);
+            	comboCarrera.setEnabled(false);
+            }
+		}
 		
 	}
 }
