@@ -6,10 +6,14 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -20,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -41,6 +46,7 @@ class ventana extends JFrame implements ActionListener{
 	
 	JLabel txtNumeroDeControl,txtNombres,txtApellidoPaterno,txtApellidoMaterno,txtEdad,txtSemestre,txtCarrera;
 	JCheckBox cbTodos,cbNoControl,cbNombres,cbApellidoP,cbApellidoM,cbEdad,cbSemestre,cbCarrera;
+	Icon iconoBusqueda = new ImageIcon("./imagenes/buscar.PNG");//imagen
 	
 	JTable tablaAlumnos;
 	JScrollPane scrollPane = new JScrollPane();
@@ -51,7 +57,10 @@ class ventana extends JFrame implements ActionListener{
 		setSize(570, 350);
 		setTitle("Menú BD Alumnos");
 		setLocationRelativeTo(null);
-		setLayout(null);
+		
+		setVisible(true);
+		
+		reasignar();
 		
 		JDesktopPane desktopPane = new JDesktopPane();
 		
@@ -175,27 +184,8 @@ class ventana extends JFrame implements ActionListener{
 		desktopPane.add(IF_ConsultasAlumnos);
 		desktopPane.setBounds(0, 0, 567, 425);
 		add(desktopPane);
-
 		
 		
-		String controlador = "com.mysql.cj.jdbc.Driver";
-		String URL = "jdbc:mysql://localhost:3306/Esccuela_Topicos";
-		String consulta = "select * from alumnos";
-		
-		ResultSetTableModel modeloDatos = null;
-		try {
-			modeloDatos = new ResultSetTableModel(controlador, URL, consulta);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		tablaAlumnos.setModel(modeloDatos);
-		
-		setVisible(true);
 	}
 	
 	public void reasignar() {
@@ -263,36 +253,37 @@ class ventana extends JFrame implements ActionListener{
 		metodoRestablecerTodo(comboEdad, comboSemestre, comboCarrera);
 		txtNumeroDeControl = new JLabel("Numero de Control: ");
 		txtNombres = new JLabel("Nombre: ");
+		txtApellidoPaterno = new JLabel("Apellido Paterno: ");
+		txtApellidoMaterno = new JLabel("Apellido Materno: ");
+		txtEdad = new JLabel("Edad: ");
+		txtSemestre = new JLabel("Semestre: ");
+		txtCarrera = new JLabel("Carrera: ");
 		
-	}
-	
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == btnAgregar) {
-			String carrera = (String) comboCarrera.getSelectedItem();
-			Alumno a = new Alumno();
-			AlumnoDAO aDAD = new AlumnoDAO();
-			a.setNumControl(cajaNoControl.getText());
-			a.setNombre(cajaNombre.getText());
-			a.setPrimerAp(cajaAP.getText());
-			a.setSegundoAp(cajaAM.getText());
-			a.setSemestre(comboSemestre.getSelectedIndex());
-			a.setCarrera(carrera);
-			
-			System.out.println(aDAD.insertarRegistro(a) ? "EXITO": "Me cambio de carrera");
-		}
-		else if(e.getSource() == btnBorrar) {
-			cajaNoControl.setText("");
-			cajaNombre.setText("");
-			cajaAP.setText("");
-			cajaAM.setText("");
-		}
-		else if(e.getSource() == btnCancelar) {
-			setVisible(false);
-		}
+		btnBorrar = new JButton("Borrar");
+		btnBorrar.addActionListener(this);
+		btnInteraccion = new JButton("");
+		btnInteraccion.addActionListener(this);
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(this);
+		btnBuscar = new JButton(iconoBusqueda);
+		btnBuscar.addActionListener(this);
 		
-		
+		cbTodos = new JCheckBox();
+		cbNoControl = new JCheckBox();
+		cbNombres = new JCheckBox();
+		cbApellidoP = new JCheckBox();
+		cbApellidoM = new JCheckBox();
+		cbEdad = new JCheckBox();
+		cbSemestre = new JCheckBox();
+		cbCarrera = new JCheckBox();
+		cbTodos.addItemListener((ItemListener) this);
+		cbNoControl.addItemListener((ItemListener) this);
+		cbNombres.addItemListener((ItemListener) this);
+		cbApellidoP.addItemListener((ItemListener) this);
+		cbApellidoM.addItemListener((ItemListener) this);
+		cbEdad.addItemListener((ItemListener) this);
+		cbSemestre.addItemListener((ItemListener) this);
+		cbCarrera.addItemListener((ItemListener) this);
 		
 	}
 	
@@ -303,6 +294,16 @@ class ventana extends JFrame implements ActionListener{
 		cbEdad.setSelected(b);
 		cbSemestre.setSelected(b);
 		cbCarrera.setSelected(b);
+	}
+	
+	public void setCheckboxesEnabled(boolean b){
+		cbNoControl.setEnabled(b);
+		cbNombres.setEnabled(b);
+		cbApellidoP.setEnabled(b);
+		cbApellidoM.setEnabled(b);
+		cbEdad.setEnabled(b);
+		cbSemestre.setEnabled(b);
+		cbCarrera.setEnabled(b);
 	}
 	
 	public void setFormularioEnabled(boolean b) {
@@ -316,11 +317,11 @@ class ventana extends JFrame implements ActionListener{
 	}
 	
 	public JPanel[] defPanel(JInternalFrame frame,String encabezado,String titulo,Color color) {
-		frame.getContentPane().setLayout(null);//Frame
+		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		frame.setSize(567,290);
 		frame.setTitle(encabezado);
-		JPanel panelTitulo = new JPanel();//Panel titulo
+		JPanel panelTitulo = new JPanel();
 		panelTitulo.setLayout(null);
 		panelTitulo.setBackground(color);
 		panelTitulo.setBounds(0, 0, 567, 50);
@@ -328,7 +329,7 @@ class ventana extends JFrame implements ActionListener{
 		lblTitulo.setFont(new Font("Calibri", Font.BOLD, 20));
 		lblTitulo.setForeground(Color.WHITE);
 		metodoMagico(lblTitulo, 30, 20, 290, 20, panelTitulo);
-		JPanel panel = new JPanel();//Panel
+		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(0, 50, 567, 425);
@@ -382,6 +383,50 @@ class ventana extends JFrame implements ActionListener{
 		}
 	}
 	
+	public String consulta() {
+		AlumnoDAO aDAO = new AlumnoDAO();
+		String sql = "select * from alumnos";
+		boolean primero = true;
+		
+		if (!cajaNoControl.getText().equals("")) {
+			if (!primero) {sql+=" AND ";}else {sql+="WHERE ";}
+			primero=false;
+			sql+=("NumComtrol='"+cajaNoControl.getText()+"'");
+		}
+		if (!cajaNombre.getText().equals("")) {
+			if (!primero) {sql+=" AND ";}else {sql+="WHERE ";}
+			primero=false;
+			sql+=("Nombre='"+cajaNombre.getText()+"'");
+		}
+		if (!cajaAP.getText().equals("")) {
+			if (!primero) {sql+=" AND ";}else {sql+="WHERE ";}
+			primero=false;
+			sql+=("PrimerAp='"+cajaAP.getText()+"'");
+		}
+		if (!cajaAM.getText().equals("")) {
+			if (!primero) {sql+=" AND ";}else {sql+="WHERE ";}
+			primero=false;
+			sql+=("SegundoAp='"+cajaAM.getText()+"'");
+		}
+		if (comboEdad.getSelectedIndex()!=-1) {
+			if (!primero) {sql+=" AND ";}else {sql+="WHERE ";}
+			primero=false;
+			sql+=("Edad="+comboEdad.getSelectedItem());
+		}
+		if (comboSemestre.getSelectedIndex()!=-1) {
+			if (!primero) {sql+=" AND ";}else {sql+="WHERE ";}
+			primero=false;
+			sql+=("Semestre="+comboSemestre.getSelectedItem());
+		}
+		if (comboCarrera.getSelectedIndex()!=-1) {
+			if (!primero) {sql+=" AND ";}else {sql+="WHERE ";}
+			primero=false;
+			sql+=("Carrera='"+comboCarrera.getSelectedItem()+"'");
+		}
+		
+		return sql;
+	}
+	
 	public void actualizarTabla(String driver, String url, String sql) {
 		ResultSetTableModel modeloDatos =null;
 		try {
@@ -416,6 +461,94 @@ class ventana extends JFrame implements ActionListener{
 		comboEdad.setSelectedIndex((int)(tablaAlumnos.getValueAt(tablaAlumnos.getSelectedRow(),4))-1);
 		comboSemestre.setSelectedIndex((int)(tablaAlumnos.getValueAt(tablaAlumnos.getSelectedRow(),5))-1);
 		comboCarrera.setSelectedItem(tablaAlumnos.getValueAt(tablaAlumnos.getSelectedRow(),6));
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnInteraccion) {
+			AlumnoDAO aDAO = new AlumnoDAO();
+			if (IF_AltaAlumnos.isVisible()) {
+				if (cajaNoControl.getText().equals("")||cajaNombre.getText().equals("")||cajaAP.getText().equals("")||cajaAM.getText().equals("")||comboEdad.getSelectedIndex()==-1||comboSemestre.getSelectedIndex()==-1||comboCarrera.getSelectedIndex()==-1) {
+					JOptionPane.showMessageDialog(null, "Error: faltan uno o más campos");
+				}else {
+					Alumno a = new Alumno(cajaNoControl.getText(), cajaNombre.getText(), cajaAP.getText(), cajaAM.getText(),
+							(byte)(comboEdad.getSelectedIndex()+1), (byte)(comboSemestre.getSelectedIndex()+1), comboCarrera.getSelectedItem().toString());
+					if (aDAO.insertarRegistro(a)) {
+						JOptionPane.showMessageDialog(null, "Alumno agregado exitosamente");
+					}else {
+						JOptionPane.showMessageDialog(null, "No se pudo agregar al alumno");
+					}
+				}
+			}else if(IF_BajaAlumnos.isVisible()) {
+				if (cajaNoControl.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "No se esta especificando el numero de control");
+				}else {
+					if (aDAO.eliminarRegistro(cajaNoControl.getText())) {
+						JOptionPane.showMessageDialog(null, "Alumno eliminado exitosamente");
+					}else {
+						JOptionPane.showMessageDialog(null, "No se pudo eliminar al alumno");
+					}
+				}
+			}else if (IF_CambiosAlumnos.isVisible()) {
+				
+				if (cajaNoControl.getText().equals("")) {
+					JOptionPane.showMessageDialog(null, "No se esta especificando el numero de control");
+				}else {
+					Alumno a = new Alumno(cajaNoControl.getText(), cajaNombre.getText(), cajaAP.getText(), cajaAM.getText(),
+							(byte)(comboEdad.getSelectedIndex()+1), (byte)(comboSemestre.getSelectedIndex()+1), 
+							comboCarrera.getSelectedIndex()!=-1?comboCarrera.getSelectedItem().toString():"");
+					boolean flags[]=new boolean[6];
+					flags[0]=!cajaNombre.getText().equals("");
+					flags[1]=!cajaAP.getText().equals("");
+					flags[2]=!cajaAM.getText().equals("");
+					flags[3]=comboEdad.getSelectedIndex()!=-1;
+					flags[4]=comboSemestre.getSelectedIndex()!=-1;
+					flags[5]=comboCarrera.getSelectedIndex()!=-1;
+					
+					if (aDAO.modificarRegistro(a, flags)) {
+						JOptionPane.showMessageDialog(null, "Datos de Alumno modificados exitosamente");
+					}else {
+						JOptionPane.showMessageDialog(null, "No se pudieron modificar los datos del alumno");
+					}
+				}
+				
+			}else if(IF_ConsultasAlumnos.isVisible()) {
+				if (cajaNoControl.getText().equals("")&& cajaNombre.getText().equals("") && cajaAP.getText().equals("") && cajaAM.getText().equals("")&&comboEdad.getSelectedIndex()==-1&&comboSemestre.getSelectedIndex()==-1&&comboCarrera.getSelectedIndex()==-1) {
+					JOptionPane.showMessageDialog(null, "Error: no se lleno ningun campo");
+				}else {
+					ArrayList<Alumno> listaAlumnos = aDAO.buscarAlumnos("Parametros");
+					if (listaAlumnos.size()!=0) {
+						JOptionPane.showMessageDialog(null, "Se encontraron registros que coinciden");
+					}else {
+						JOptionPane.showMessageDialog(null, "No se encontraron coincidencias");
+					}
+				}
+				
+			}
+			actualizarTabla("com.mysql.cj.jdbc.Driver","jdbc:mysql://localhost:3306/Esccuela_Topicos","SELECT * FROM alumnos");
+		}
+		if (e.getSource()== btnBuscar) {
+			
+			String sql = consulta();
+			AlumnoDAO aDAO = new AlumnoDAO();
+			
+			actualizarTabla("com.mysql.cj.jdbc.Driver","jdbc:mysql://localhost:3306/Esccuela_Topicos",sql);
+			ArrayList<Alumno> alumnos = aDAO.buscarAlumnos(sql);
+			
+		}
+		if (e.getSource()== btnBorrar) {
+			metodoRestablecerTodo(cajaNoControl, cajaNombre, cajaAP , cajaAM , comboEdad,comboSemestre,comboCarrera);
+		}
+		if (e.getSource()== btnCancelar) {
+			IF_AltaAlumnos.setVisible(false);
+			IF_BajaAlumnos.setVisible(false);
+			IF_CambiosAlumnos.setVisible(false);
+			IF_ConsultasAlumnos.setVisible(false);
+		}
+		
+		
+		
+		
 	}
 }
 
